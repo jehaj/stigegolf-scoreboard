@@ -9,8 +9,11 @@ const addButton = document.getElementById("add-button");
 const addText = document.getElementById("add-field");
 
 const addOneButton = document.getElementById("plus-one");
+addOneButton.addEventListener("click", () => { updateScore(1) })
 const addTwoButton = document.getElementById("plus-two");
+addTwoButton.addEventListener("click", () => { updateScore(2) })
 const addThreeButton = document.getElementById("plus-three");
+addThreeButton.addEventListener("click", () => { updateScore(3) })
 const newRoundButton = document.getElementById("new-round");
 
 const tableData = document.getElementsByTagName("td");
@@ -80,4 +83,10 @@ function updateScore(value) {
         console.error("Nothing is selected.");
         return;
     }
+    const index = Array.from(selected.parentElement.children).indexOf(selected);
+    const toUpdate = tableScores.lastChild.children[index];
+    const oldValue = parseInt(toUpdate.innerText);
+    const newValue = oldValue + value;
+    console.log(`Updating player at ${index} from value ${oldValue} to ${newValue}`);
+    toUpdate.innerText = newValue.toFixed();
 }
