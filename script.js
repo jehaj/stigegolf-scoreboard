@@ -79,6 +79,7 @@ clearButton.addEventListener("click", function () {
     addButton.removeAttribute("disabled");
     tableHeader.innerHTML = "";
     tableScores.innerHTML = "";
+    tableResult.innerHTML = "";
 });
 
 function updateScore(value) {
