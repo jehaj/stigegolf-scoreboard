@@ -2,7 +2,19 @@
     font-weight: bold;
 }
 
+#result {
+    font-style: italic;
+}
+
 .center {
     margin: 80px auto;
     width: 400px;
+}
+
+input {
+    margin: 8px 0px;
+}
+
+td+td {
+    padding-left: 12px;
 }

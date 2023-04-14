@@ -1,8 +1,9 @@
 "use strict";
 
 const table = document.getElementById("scoreboard")
-const tableScores = document.getElementById("scores");
 const tableHeader = document.getElementById("table-header");
+const tableScores = document.getElementById("scores");
+const tableResult = document.getElementById("result");
 
 const clearButton = document.getElementById("clear-button");
 const addButton = document.getElementById("add-button");
@@ -39,6 +40,8 @@ function selectEvent(e) {
 
 addButton.addEventListener("click", function () {
     const player = addText.value;
+    addText.value = "";
+    addText.focus();
     console.log(`Adding the player "${player}".`);
     const playerElement = document.createElement("td");
     playerElement.innerText = player;
@@ -89,4 +92,21 @@ function updateScore(value) {
     const newValue = oldValue + value;
     console.log(`Updating player at ${index} from value ${oldValue} to ${newValue}`);
     toUpdate.innerText = newValue.toFixed();
+
+    // update scores in result
+    const headers = tableHeader.childElementCount;
+    const results = tableResult.childElementCount;
+    if (results == 0) {
+        tableResult.appendChild(document.createElement("tr"));
+    }
+    for (let i = tableResult.lastChild.childElementCount; i < headers; i++) {
+        const td = document.createElement("td");
+        td.innerText = "0";
+        tableResult.lastChild.appendChild(td);
+    }
+
+    const resultToUpdate = tableResult.lastChild.children[index];
+    const oldResult = parseInt(resultToUpdate.innerText);
+    const newResult = oldResult + value;
+    resultToUpdate.innerText = newResult.toFixed();
 }
