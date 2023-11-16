@@ -10,11 +10,17 @@ const addButton = document.getElementById("add-button");
 const addText = document.getElementById("add-field");
 
 const addOneButton = document.getElementById("plus-one");
-addOneButton.addEventListener("click", () => { updateScore(1) })
+addOneButton.addEventListener("click", () => {
+    updateScore(1)
+})
 const addTwoButton = document.getElementById("plus-two");
-addTwoButton.addEventListener("click", () => { updateScore(2) })
+addTwoButton.addEventListener("click", () => {
+    updateScore(2)
+})
 const addThreeButton = document.getElementById("plus-three");
-addThreeButton.addEventListener("click", () => { updateScore(3) })
+addThreeButton.addEventListener("click", () => {
+    updateScore(3)
+})
 const newRoundButton = document.getElementById("new-round");
 
 const tableData = document.getElementsByTagName("td");
@@ -48,7 +54,7 @@ addButton.addEventListener("click", function () {
     playerElement.addEventListener("click", selectEvent);
     tableHeader.appendChild(playerElement);
     // add initial score of zero
-    if (scores.childElementCount == 0) {
+    if (scores.childElementCount === 0) {
         const row = document.createElement("tr");
         row.id = "1-round";
         tableScores.appendChild(row);
@@ -76,10 +82,12 @@ newRoundButton.addEventListener("click", function () {
 });
 
 clearButton.addEventListener("click", function () {
-    addButton.removeAttribute("disabled");
-    tableHeader.innerHTML = "";
-    tableScores.innerHTML = "";
-    tableResult.innerHTML = "";
+    if (confirm("Er du sikker på, at du vil rydde alt?")) {
+        addButton.removeAttribute("disabled");
+        tableHeader.innerHTML = "";
+        tableScores.innerHTML = "";
+        tableResult.innerHTML = "";
+    }
 });
 
 function updateScore(value) {
@@ -97,7 +105,7 @@ function updateScore(value) {
     // update scores in result
     const headers = tableHeader.childElementCount;
     const results = tableResult.childElementCount;
-    if (results == 0) {
+    if (results === 0) {
         tableResult.appendChild(document.createElement("tr"));
     }
     for (let i = tableResult.lastChild.childElementCount; i < headers; i++) {
