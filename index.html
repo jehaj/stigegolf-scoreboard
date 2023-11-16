@@ -12,24 +12,29 @@
 
 <body>
     <div class="center">
-        <input type="text" id="add-field" placeholder="Navn">
-        <input type="button" value="Tilføj" id="add-button">
-        <table id="scoreboard">
-            <thead>
+        <div id="add-header">
+            <input type="text" id="add-field" placeholder="Navn">
+            <button id="add-button">Tilføj</button>
+        </div>
+        <div id="table-wrapper">
+            <table id="scoreboard">
+                <thead>
                 <tr id="table-header">
                 </tr>
-            </thead>
-            <tbody id="scores">
-            </tbody>
-            <tfoot id="result">
-            </tfoot>
-        </table>
-        <input type="button" value="+1" id="plus-one">
-        <input type="button" value="+2" id="plus-two">
-        <input type="button" value="+3" id="plus-three">
-        <input type="button" value="Ny runde" id="new-round">
-        <br>
-        <input type="button" value="Ryd" id="clear-button">
+                </thead>
+                <tbody id="scores">
+                </tbody>
+                <tfoot id="result">
+                </tfoot>
+            </table>
+        </div>
+        <div id="add-bar">
+            <button id="plus-one">+1</button>
+            <button id="plus-two">+2</button>
+            <button id="plus-three">+3</button>
+            <button id="new-round">Ny runde</button>
+        </div>
+        <button id="clear-button">Ryd</button>
     </div>
     <script src="./script.js"></script>
 </body>

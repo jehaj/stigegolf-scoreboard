@@ -1,3 +1,8 @@
+body {
+    margin: 0;
+    padding: 8px;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -6,15 +11,53 @@
     font-style: italic;
 }
 
-.center {
-    margin: 80px auto;
-    max-width: 600px;
+#table-wrapper {
+    overflow: scroll;
 }
 
-input {
-    margin: 8px 0px;
+.center {
+    margin: 0 auto;
+    max-width: 600px;
 }
 
 td+td {
     padding-left: 12px;
+}
+
+@media screen and (max-width: 500px) {
+    html, body, .center {
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-size: 1.5rem;
+    }
+
+    .center {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .center button, .center input {
+        height: 3rem;
+        min-height: 3rem;
+        box-sizing: border-box;
+        font-size: 1.3rem;
+    }
+
+    #add-bar, #add-header {
+        display: flex;
+        width: 100%;
+        gap: 16px;
+    }
+
+    #add-bar {
+        margin-top: auto;
+    }
+
+    #add-bar button, #add-header * {
+        flex-grow: 1;
+    }
 }
