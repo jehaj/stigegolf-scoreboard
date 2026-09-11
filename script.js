@@ -24,8 +24,97 @@ addThreeButton.addEventListener("click", () => {
 const newRoundButton = document.getElementById("new-round");
 
 const tableData = document.getElementsByTagName("td");
+const STORAGE_KEY = "stigegolf-scoreboard";
 
 let selected = null;
+
+function createHeaderCell(text) {
+    const playerElement = document.createElement("td");
+    playerElement.innerText = text;
+    playerElement.addEventListener("click", selectEvent);
+    return playerElement;
+}
+
+function createScoreCell(value = 0) {
+    const score = document.createElement("td");
+    score.innerText = value.toString();
+    score.addEventListener("click", selectEvent);
+    return score;
+}
+
+function saveState() {
+    const state = {
+        headers: Array.from(tableHeader.children).map((cell) => cell.innerText),
+        scores: Array.from(tableScores.children).map((row) =>
+            Array.from(row.children).map((cell) => parseInt(cell.innerText, 10))
+        ),
+        results: tableResult.childElementCount > 0
+            ? Array.from(tableResult.lastChild.children).map((cell) => parseInt(cell.innerText, 10))
+            : [],
+        selectedIndex: selected ? Array.from(tableHeader.children).indexOf(selected) : null,
+        addDisabled: addButton.hasAttribute("disabled")
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function restoreState() {
+    const rawState = localStorage.getItem(STORAGE_KEY);
+    if (rawState === null) {
+        return;
+    }
+
+    try {
+        const state = JSON.parse(rawState);
+        if (!Array.isArray(state.headers) || !Array.isArray(state.scores)) {
+            return;
+        }
+
+        tableHeader.innerHTML = "";
+        tableScores.innerHTML = "";
+        tableResult.innerHTML = "";
+        selected = null;
+
+        for (const header of state.headers) {
+            tableHeader.appendChild(createHeaderCell(header));
+        }
+
+        for (const scores of state.scores) {
+            const row = document.createElement("tr");
+            row.id = "1-round";
+            for (const score of scores) {
+                row.appendChild(createScoreCell(score));
+            }
+            tableScores.appendChild(row);
+        }
+
+        if (Array.isArray(state.results) && state.results.length > 0) {
+            const resultRow = document.createElement("tr");
+            for (const score of state.results) {
+                const td = document.createElement("td");
+                td.innerText = score.toString();
+                resultRow.appendChild(td);
+            }
+            tableResult.appendChild(resultRow);
+        }
+
+        if (state.addDisabled) {
+            addButton.setAttribute("disabled", "");
+        } else {
+            addButton.removeAttribute("disabled");
+        }
+
+        if (
+            state.selectedIndex !== null &&
+            state.selectedIndex >= 0 &&
+            state.selectedIndex < tableHeader.childElementCount
+        ) {
+            selected = tableHeader.children[state.selectedIndex];
+            selected.classList.add("bold");
+        }
+    } catch (error) {
+        console.error("Could not restore previous scoreboard state", error);
+    }
+}
 
 function selectEvent(e) {
     if (selected !== null) {
@@ -34,6 +123,7 @@ function selectEvent(e) {
     if (selected === e.target) {
         selected.classList.remove("bold");
         selected = null;
+        saveState();
         return;
     }
     // get index in row
@@ -42,6 +132,7 @@ function selectEvent(e) {
     console.log(index);
     selected = tableHeader.children[index];
     selected.classList.add("bold");
+    saveState();
 }
 
 addButton.addEventListener("click", function () {
@@ -49,20 +140,17 @@ addButton.addEventListener("click", function () {
     addText.value = "";
     addText.focus();
     console.log(`Adding the player "${player}".`);
-    const playerElement = document.createElement("td");
-    playerElement.innerText = player;
-    playerElement.addEventListener("click", selectEvent);
+    const playerElement = createHeaderCell(player);
     tableHeader.appendChild(playerElement);
     // add initial score of zero
-    if (scores.childElementCount === 0) {
+    if (tableScores.childElementCount === 0) {
         const row = document.createElement("tr");
         row.id = "1-round";
         tableScores.appendChild(row);
     }
-    const score = document.createElement("td");
-    score.innerText = "0";
-    score.addEventListener("click", selectEvent);
+    const score = createScoreCell();
     tableScores.lastChild.appendChild(score);
+    saveState();
 });
 
 newRoundButton.addEventListener("click", function () {
@@ -74,11 +162,10 @@ newRoundButton.addEventListener("click", function () {
 
     const players = tableHeader.childElementCount;
     for (let i = 0; i < players; i++) {
-        const score = document.createElement("td");
-        score.addEventListener("click", selectEvent);
-        score.innerText = "0";
+        const score = createScoreCell();
         tableScores.lastChild.appendChild(score);
     }
+    saveState();
 });
 
 clearButton.addEventListener("click", function () {
@@ -87,6 +174,8 @@ clearButton.addEventListener("click", function () {
         tableHeader.innerHTML = "";
         tableScores.innerHTML = "";
         tableResult.innerHTML = "";
+        selected = null;
+        localStorage.removeItem(STORAGE_KEY);
     }
 });
 
@@ -118,4 +207,7 @@ function updateScore(value) {
     const oldResult = parseInt(resultToUpdate.innerText);
     const newResult = oldResult + value;
     resultToUpdate.innerText = newResult.toFixed();
+    saveState();
 }
+
+restoreState();
